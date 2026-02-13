@@ -71,6 +71,41 @@ async function setup() {
     // Connect the device to the web audio graph
     device.node.connect(outputNode);
 
+    // --- Microphone Setup ---
+    let micStream = null;
+    let micSource = null;
+
+    async function enableMicrophone() {
+        try {
+            // Resume context (required by browsers)
+            await context.resume();
+
+            // Request microphone access
+            micStream = await navigator.mediaDevices.getUserMedia({
+                audio: {
+                        echoCancellation: false,
+                        noiseSuppression: false,
+                        autoGainControl: false
+                },
+                video: false
+            });
+
+            // Create MediaStream source
+            micSource = context.createMediaStreamSource(micStream);
+
+            // Connect mic to RNBO device
+            micSource.connect(device.node);
+
+            console.log("Microphone connected");
+
+        } catch (err) {
+            console.error("Microphone error:", err);
+        }
+    }
+
+    // Attach button
+    document.getElementById("enable-mic").onclick = enableMicrophone;
+
     // (Optional) Extract the name and rnbo version of the patcher from the description
     document.getElementById("patcher-title").innerText = (patcher.desc.meta.filename || "Unnamed Patcher") + " (v" + patcher.desc.meta.rnboversion + ")";
 
