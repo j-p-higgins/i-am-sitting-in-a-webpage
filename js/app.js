@@ -1,136 +1,69 @@
 async function setup() {
+
     const patchExportURL = "export/patch.export.json";
 
-    // Create AudioContext
+    // Create AudioContext from user gesture
     const WAContext = window.AudioContext || window.webkitAudioContext;
     const context = new WAContext();
+    await context.resume();
 
-    // Create gain node and connect it to audio output
-    const outputNode = context.createGain();
-    outputNode.connect(context.destination);
-    
-    // Fetch the exported patcher
-    let response, patcher;
-    try {
-        response = await fetch(patchExportURL);
-        patcher = await response.json();
-    
-        if (!window.RNBO) {
-            // Load RNBO script dynamically
-            // Note that you can skip this by knowing the RNBO version of your patch
-            // beforehand and just include it using a <script> tag
-            await loadRNBOScript(patcher.desc.meta.rnboversion);
-        }
+    // Request microphone
+    let micStream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+            echoCancellation: false,
+            noiseSuppression: false,
+            autoGainControl: false
+        },
+        video: false
+    });
 
-    } catch (err) {
-        const errorContext = {
-            error: err
-        };
-        if (response && (response.status >= 300 || response.status < 200)) {
-            errorContext.header = `Couldn't load patcher export bundle`,
-            errorContext.description = `Check app.js to see what file it's trying to load. Currently it's` +
-            ` trying to load "${patchExportURL}". If that doesn't` + 
-            ` match the name of the file you exported from RNBO, modify` + 
-            ` patchExportURL in app.js.`;
-        }
-        if (typeof guardrails === "function") {
-            guardrails(errorContext);
-        } else {
-            throw err;
-        }
-        return;
+    // Safari stabilization delay
+    await new Promise(r => setTimeout(r, 100));
+
+    // Fetch RNBO patch
+    let response = await fetch(patchExportURL);
+    let patcher = await response.json();
+
+    if (!window.RNBO) {
+        await loadRNBOScript(patcher.desc.meta.rnboversion);
     }
-    
-    // (Optional) Fetch the dependencies
-    let dependencies = [];
+
+    // Create RNBO device
+    let device = await RNBO.createDevice({ context, patcher });
+
+    // Load dependencies if present
     try {
         const dependenciesResponse = await fetch("export/dependencies.json");
-        dependencies = await dependenciesResponse.json();
-
-        // Prepend "export" to any file dependenciies
-        dependencies = dependencies.map(d => d.file ? Object.assign({}, d, { file: "export/" + d.file }) : d);
+        let dependencies = await dependenciesResponse.json();
+        dependencies = dependencies.map(d =>
+            d.file ? Object.assign({}, d, { file: "export/" + d.file }) : d
+        );
+        await device.loadDataBufferDependencies(dependencies);
     } catch (e) {}
 
-    // Create the device
-    let device;
-    try {
-        device = await RNBO.createDevice({ context, patcher });
-    } catch (err) {
-        if (typeof guardrails === "function") {
-            guardrails({ error: err });
-        } else {
-            throw err;
-        }
-        return;
-    }
+    // Create output node
+    const outputNode = context.createGain();
+    outputNode.connect(context.destination);
 
-    // (Optional) Load the samples
-    if (dependencies.length)
-        await device.loadDataBufferDependencies(dependencies);
+    // Connect mic + device
+    const micSource = context.createMediaStreamSource(micStream);
 
-    // Connect the device to the web audio graph
+    micSource.connect(device.node);
     device.node.connect(outputNode);
 
-    // --- Microphone Setup ---
-    let micStream = null;
-    let micSource = null;
+    // Make Sliders and things
 
-    async function enableMicrophone() {
-        try {
-            // Resume context (required by browsers)
-            await context.resume();
+    document.getElementById("patcher-title").innerText =
+        (patcher.desc.meta.filename || "Unnamed Patcher") +
+        " (v" + patcher.desc.meta.rnboversion + ")";
 
-            // Request microphone access
-            micStream = await navigator.mediaDevices.getUserMedia({
-                audio: {
-                        echoCancellation: false,
-                        noiseSuppression: false,
-                        autoGainControl: false
-                },
-                video: false
-            });
-
-            // Create MediaStream source
-            micSource = context.createMediaStreamSource(micStream);
-
-            // Connect mic to RNBO device
-            micSource.connect(device.node);
-
-            console.log("Microphone connected");
-
-        } catch (err) {
-            console.error("Microphone error:", err);
-        }
-    }
-
-    // Attach button
-    document.getElementById("enable-mic").onclick = enableMicrophone;
-
-    // (Optional) Extract the name and rnbo version of the patcher from the description
-    document.getElementById("patcher-title").innerText = (patcher.desc.meta.filename || "Unnamed Patcher") + " (v" + patcher.desc.meta.rnboversion + ")";
-
-    // (Optional) Automatically create sliders for the device parameters
     makeSliders(device);
-
-    // (Optional) Create a form to send messages to RNBO inputs
     makeInportForm(device);
-
-    // (Optional) Attach listeners to outports so you can log messages from the RNBO patcher
     attachOutports(device);
-
-    // (Optional) Load presets, if any
     loadPresets(device, patcher);
-
-    // (Optional) Connect MIDI inputs
     makeMIDIKeyboard(device);
 
-    document.body.onclick = () => {
-        context.resume();
-    }
-
-    // Skip if you're not using guardrails.js
-    if (typeof guardrails === "function")
-        guardrails();
+    console.log("System ready.");
 }
 
 function loadRNBOScript(version) {
@@ -371,4 +304,4 @@ function makeMIDIKeyboard(device) {
     });
 }
 
-setup();
+document.getElementById("enable-mic").onclick = setup;
