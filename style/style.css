@@ -1,6 +1,9 @@
 html, body {
-    margin: 0;
+	font-family: "Urbanist", sans-serif;
+    font-optical-sizing: auto;
+    margin: 20px;
     padding: 0;
+	background-color: #e1e1e1;
 }
 #rnbo-root {
     height: 100vh;
@@ -11,44 +14,27 @@ html, body {
     z-index: -1;
 }
 
-h2, em {
-    width: 100%;
+#main-body{
+	max-width: 300px;
 }
 
-#rnbo-root {
-    margin: auto;
-    max-width: 540px;
+h1 {
+	font-weight:100;
+	font-size: 80px;
+	margin-bottom: 0px;
+	margin-top: 0px;
+	color: #5f48bb;
 }
 
-#rnbo-clickable-keyboard {
-    display: flex;
-    flex-wrap: wrap;
+h2 {
+	font-weight:300;
+	font-size: 30px;
+	margin-bottom: 0px;
+	margin-top: 10px;
+	color: #101010;
 }
 
-#rnbo-clickable-keyboard > div {
-    margin: 2px;
-    border: solid black 1px;
-    min-height: 50px;
-    flex-grow: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-#rnbo-clickable-keyboard > div.clicked {
-    background: #222222;
-    color: #dddddd;
-}
-
-#rnbo-parameter-sliders {
-    display: flex;
-    flex-direction: column;
-}
-
-#rnbo-parameter-sliders > div {
-    display: flex;
-}
-
-#rnbo-parameter-sliders > div > input:first-of-type {
-    flex-grow: 1;
+p {
+	font-weight:300;
+	color: #101010;
 }
