@@ -16,23 +16,28 @@
 <body>
 	<h1>I am Sitting in a Room</h1>
 	<h2>Web Version</h2>
-	<div id="main-body">
-	<p>"I am sitting in a room different from the one you are in now. I am recording the sound of my speaking voice and I am going to play it back into the room again and again until the resonant frequencies of the room reinforce themselves so that any semblance of my speech, with perhaps the exception of rhythm, is destroyed.</p>
-	<p>What you will hear, then, are the natural resonant frequencies of the room articulated by speech. I regard this activity not so much as a demonstration of a physical fact, but more as a way to smooth out any irregularities my speech might have."<br>Alvin Lucier (1969)</p>
-	<p>Please turn up your speakers.</p>
-    <button id="main-button">Enable Audio</button>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-	<br><br>
-	<details id="audio-settings" style="display: none;">
-	<summary>Audio Settings</summary>
-	   <button id="normalise-button">Auto-gain Enabled</button>
-	   <p>Auto-gain should help limit clipping but may cause issues on mobile devices</p>
-	   <button id="filter-button">Low-pass Disabled</button>
-	   <p>Lowpass filtering is only reccomended on mobile devices</p>
-	</details>
+    <div class="row">
+	   <div id="main-body" class="column">
+	      <p>"I am sitting in a room different from the one you are in now. I am recording the sound of my speaking voice and I am going to play it back into the room again and again until the resonant frequencies of the room reinforce themselves so that any semblance of my speech, with perhaps the exception of rhythm, is destroyed.</p>
+	      <p>What you will hear, then, are the natural resonant frequencies of the room articulated by speech. I regard this activity not so much as a demonstration of a physical fact, but more as a way to smooth out any irregularities my speech might have."<br>Alvin Lucier (1969)</p>
+	      <p>Please turn up your speakers.</p>
+          <button id="main-button">Enable Audio</button>
+          <noscript>You need to enable JavaScript to run this app.</noscript>
+	      <br><br>
+	      <details id="audio-settings" style="display: none;">
+	      <summary>Audio Settings</summary>
+	         <button id="normalise-button">Auto-gain Enabled</button>
+	         <p>Auto-gain should help limit clipping but may cause issues on mobile devices</p>
+	         <button id="filter-button">Low-pass Disabled</button>
+	         <p>Lowpass filtering is only reccomended on mobile devices</p>
+	      </details>
+	    </div>
+        <div class="column">
+           <img src="/img/chair.png" alt="Wireframe 3d model of a chair" id="chair">
+		</div>
 	</div>
 	<footer>
-	<p>I am sitting in a room by <a href="https://condor.wesleyan.edu/alucier/bio.html" target="_blank">Alvin Lucier</a> - Programming by <a href="https://jphiggins.co.uk/" target="_blank">Jonathan Higgins</a> - Chair Model by <a href="https://sketchfab.com/3d-models/simple-chair-5549688a99004e7884c787eda25b92ae" target="_blank">AlexC3D</a></p>
+	<p>I am Sitting in a Room by <a href="https://condor.wesleyan.edu/alucier/bio.html" target="_blank">Alvin Lucier</a> - Programming by <a href="https://jphiggins.co.uk/" target="_blank">Jonathan Higgins</a> - Chair Model by <a href="https://sketchfab.com/3d-models/simple-chair-5549688a99004e7884c787eda25b92ae" target="_blank">AlexC3D</a></p>
 	</footer>
 
     <!-- Load the script that creates the RNBO device  -->
