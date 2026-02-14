@@ -64,7 +64,7 @@ async function setup() {
     if (window.matchMedia("(pointer: coarse)").matches){
 		device.parametersById.get("enable_filter").value = 1;
 		filterbutton.textContent = "Low-pass Enabled";
-		device.parametersById.get("enable_normalise").value = 0;
+		device.parametersById.get("enable_normalisation").value = 0;
 		normalisebutton.textContent = "Auto-gain Disabled";
 	}
 }
@@ -131,7 +131,7 @@ filterbutton.addEventListener("click", async () => {
 });
 
 normalisebutton.addEventListener("click", async () => {
-	const enablenormalise = device.parametersById.get("enable_normalise");
+	const enablenormalise = device.parametersById.get("enable_normalisation");
 	
 	if (enablenormalise.value == 0){
 		enablenormalise.value = 1;
