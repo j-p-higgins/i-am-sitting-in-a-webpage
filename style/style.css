@@ -67,6 +67,12 @@ button {
   cursor: pointer;
 }
 
-button:hover {
-  text-decoration: none;
+@media (hover: hover) and (pointer: fine) {
+  button:hover {
+    text-decoration: none;
+  }
+}
+
+button:active {
+	text-decoration: none;
 }
