@@ -76,3 +76,12 @@ button {
 button:active {
 	text-decoration: none;
 }
+
+a {
+  color: #5f48bb;
+}
+
+footer {
+	color: #202020;
+	font-size: 12px;
+}
